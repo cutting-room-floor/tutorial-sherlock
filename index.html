@@ -18,6 +18,23 @@ body {
   left:0px;
   width:100%;
   }
+.spot {
+  width:60px;
+  height:60px;
+  margin:-40px 0px 0px -40px;
+  border-radius:50%;
+  border:10px solid #ff9270;
+  background:#ff9270 url(sprite.png) 100px 100px no-repeat;
+  position:absolute;
+  }
+.spot-baker { background-position:-120px -20px; }
+.spot-aldgate { background-position:-220px -20px; }
+.spot-london-bridge { background-position:-320px -20px; }
+.spot-woolwich { background-position:-420px -20px; }
+.spot-gloucester { background-position:-520px -20px; }
+.spot-caulfield-gardens { background-position:-620px -20px; }
+.spot-telegraph { background-position:-720px -20px; }
+.spot-charing-cross { background-position:-820px -20px; }
 </style>
 </head>
 <body>
@@ -27,37 +44,41 @@ body {
 <script>
 var geojson = [
   { "geometry": { "type": "Point", "coordinates": [-0.155740,51.517998] },
-    "properties": { "title": "Baker St." } },
+    "properties": { "id": "baker" } },
   { "geometry": { "type": "Point", "coordinates": [-0.075531,51.514084] },
-    "properties": { "title": "Aldgate Station" } },
+    "properties": { "id": "aldgate" } },
   { "geometry": { "type": "Point", "coordinates": [-0.087097,51.505337] },
-    "properties": { "title": "London Bridge Station" } },
+    "properties": { "id": "london-bridge" } },
   { "geometry": { "type": "Point", "coordinates": [0.055275,51.487156] },
-    "properties": { "title": "Woolwich Arsenal" } },
+    "properties": { "id": "woolwich" } },
   { "geometry": { "type": "Point", "coordinates": [-0.128853,51.501076] },
-    "properties": { "title": "Gloucester Station" } },
+    "properties": { "id": "gloucester" } },
   { "geometry": { "type": "Point", "coordinates": [-0.195951,51.502171] },
-    "properties": { "title": "Caulfield Gardens" } },
+    "properties": { "id": "caulfield-gardens" } },
   { "geometry": { "type": "Point", "coordinates": [-0.106832,51.514328] },
-    "properties": { "title": "The Daily Telegraph" } },
+    "properties": { "id": "telegraph" } },
   { "geometry": { "type": "Point", "coordinates": [-0.123124,51.507168] },
-    "properties": { "title": "Charing Cross Station" } },
+    "properties": { "id": "charing-cross" } }
 ];
 var tiles = mapbox.layer().tilejson({
   tiles: [ "http://a.tiles.mapbox.com/v3/yhahn.map-liczq28b/{z}/{x}/{y}.png" ]
 });
 var spots = mapbox.markers.layer()
   // Load up markers from geojson data.
-  .features(geojson);
+  .features(geojson)
+  // Define a new factory function. Takes geojson input and returns a
+  // DOM element that represents the point.
+  .factory(function(f) {
+    var el = document.createElement('div');
+    el.className = 'spot spot-' + f.properties.id;
+    return el;
+  });
 
 var map = mapbox
   // Creates the map with tile and spots layers.
   .map('map', [tiles, spots])
   // Sets the initial map view to 0.1296E, 51.5011N @ Z14.
   .centerzoom({ lon:-0.1296, lat:51.5011 }, 14);
-
-// Enable interaction events on spots layer.
-mapbox.markers.interaction(spots);
 </script>
 
 </body>
