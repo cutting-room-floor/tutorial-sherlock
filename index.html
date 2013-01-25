@@ -2,7 +2,8 @@
 <html>
 <head>
 <meta charset='UTF-8'/>
-<script src='http://underscorejs.org/underscore-min.js'></script>
+<script src='http://api.tiles.mapbox.com/mapbox.js/v0.6.7/mapbox.js'></script>
+<link href='http://api.tiles.mapbox.com/mapbox.js/v0.6.7/mapbox.css' rel='stylesheet' />
 <style>
 body {
   margin:0px;
@@ -10,119 +11,53 @@ body {
   font:normal 15px/20px Arial,sans-serif;
   background:#fff;
   }
-article {
-  width:33.3333%;
-  min-width:320px;
-  position:relative;
-  padding-top:40px;
-  padding-bottom:33.3333%;
-  }
-section {
-  padding:40px;
-  margin-left:40px;
-  color:transparent;
-  text-shadow:rgba(64,64,64,1) 0px 0px 4px;
-  position:relative;
-  -webkit-transition:background 500ms, color 500ms;
-  }
-section.active {
-  background:rgba(32,32,32,255);
-  color:rgba(255,255,255,0.9);
-  }
-h1 { font-size:2em; line-height:1em; }
-h2 { font-size:1.3333em; }
-h1,h2 { margin:0px 0px 10px; }
-p { margin:0px; }
-small {
+#map  {
   position:absolute;
-  right:0px; bottom:0px;
-  font-size:10px;
-  text-transform:uppercase;
-  padding:5px 10px;
-  }
-
-.cover:before {
-  content:'';
-  display:block;
-  width:100px; height:100px;
-  margin:0px auto 20px;
-  border-radius:50%;
-  border:10px solid transparent;
-  }
-.cover.active:before {
-  background:#333 url(sprite.png) 0px 0px no-repeat;
-  border-color:#333;
+  top:0px;
+  bottom:0px;
+  left:0px;
+  width:100%;
   }
 </style>
 </head>
 <body>
 
-<article>
-  <section class='cover active'>
-    <h1>The Adventure of the Bruce-Partington Plans</h1>
-    <p>by Sir Arthur Conan Doyle</p>
-    <small>Scroll ▼</small>
-  </section>
-  <section>
-    <h2>221b Baker St.</h2>
-    <p>November 1895. London is shrouded in fog and Sherlock Holmes and Watson pass time restlessly awaiting a new case. "The London criminal is certainly a dull fellow," Sherlock bemoans. "There have been numerous petty thefts," Watson offers in response. Just then a telegram arrives from Sherlock's brother Mycroft with a mysterious case.</p>
-  </section>
-  <section>
-    <h2>Aldgate Station</h2>
-    <p>Arthur Cadogan West was found dead, head crushed in on train tracks at Aldgate Station at 6AM Tuesday morning. West worked at Woolwich Arsenal on the Bruce-Partington submarine, a secret military project. Plans for the submarine had been stolen and seven of the ten missing papers were found in West's possession. Mycroft implores Sherlock to take the case and recover the three missing papers.</p>
-  </section>
-  <section>
-    <h2>London Bridge</h2>
-    <p>Holmes and Watson's investigations take them across London. Sherlock deduces that West was murdered elsewhere, then moved to Aldgate Station to create the illusion that he was crushed on the tracks by a train. On their way to Woolwich Sherlock dispatches a telegram to Mycroft at London Bridge: "Send list of all foreign spies known to be in England, with full address."</p>
-  </section>
-  <section>
-    <h2>Woolwich Arsenal</h2>
-    <p>While investigating at Woolwich Arsenal Sherlock learns that West did not have the three keys&mdash;door, office, and safe&mdash;necessary to steal the papers. The train station clerk mentions seeing an agitated West boarding the 8:15 train to London Bridge. Sherlock suspects West of following someone who had access to the Woolwich chief's keyring with all three keys.</p>
-  </section>
-  <section>
-    <h2>Gloucester Road</h2>
-    <p>Mycroft responds to Sherlock's telegram and mentions several spies. Hugo Oberstein of 13 Caulfield Gardens catches Sherlock's eye. He heads to the nearby Gloucester Road station to investigate and learns that the windows of Caulfield Gardens open over rail tracks where trains stop frequently.</p>
-  </section>
-  <section>
-    <h2>13 Caulfield Gardens</h2>
-    <p>Holmes deduces that the murderer placed West atop a stopped train at Caulfield Gardens. The train traveled to Aldgate Station before West's body finally toppled off. Backtracking to the criminal's apartment, Holmes finds a series of classified ads from <em>The Daily Telegraph</em> stashed away. All are under the name Pierrot: "Monday night after nine. Two taps. Only ourselves. Do not be so suspicious. Payment in hard cash when goods delivered."</p>
-  </section>
-  <section>
-    <h2>The Daily Telegraph</h2>
-    <p>Holmes and Watson head to The Daily Telegraph and place an ad to draw out the criminal. It reads: "To-night. Same hour. Same place. Two taps. Most vitally important. Your own safety at stake. Pierrot." The trap works and Holmes catches the criminal: Colonel Valentine Walter, the brother of Woolwich Arsenal's chief. He confesses to working for Hugo Oberstein to obtain the submarine plans in order to pay off his debts.</p>
-  </section>
-  <section>
-    <h2>Charing Cross Hotel</h2>
-    <p>Walter writes to Oberstein and convinces him to meet in the smoking room of the Charing Cross Hotel where he promises additional plans for the submarine in exchange for money. The plan works and Holmes and Watson catch both criminals.</p>
-  </section>
-</article>
+<div id='map'></div>
 
 <script>
-// Array of story section elements.
-var sections = document.getElementsByTagName('section');
+var geojson = [
+  { "geometry": { "type": "Point", "coordinates": [-0.155740,51.517998] },
+    "properties": { "title": "Baker St." } },
+  { "geometry": { "type": "Point", "coordinates": [-0.075531,51.514084] },
+    "properties": { "title": "Aldgate Station" } },
+  { "geometry": { "type": "Point", "coordinates": [-0.087097,51.505337] },
+    "properties": { "title": "London Bridge Station" } },
+  { "geometry": { "type": "Point", "coordinates": [0.055275,51.487156] },
+    "properties": { "title": "Woolwich Arsenal" } },
+  { "geometry": { "type": "Point", "coordinates": [-0.128853,51.501076] },
+    "properties": { "title": "Gloucester Station" } },
+  { "geometry": { "type": "Point", "coordinates": [-0.195951,51.502171] },
+    "properties": { "title": "Caulfield Gardens" } },
+  { "geometry": { "type": "Point", "coordinates": [-0.106832,51.514328] },
+    "properties": { "title": "The Daily Telegraph" } },
+  { "geometry": { "type": "Point", "coordinates": [-0.123124,51.507168] },
+    "properties": { "title": "Charing Cross Station" } },
+];
+var tiles = mapbox.layer().tilejson({
+  tiles: [ "http://a.tiles.mapbox.com/v3/yhahn.map-liczq28b/{z}/{x}/{y}.png" ]
+});
+var spots = mapbox.markers.layer()
+  // Load up markers from geojson data.
+  .features(geojson);
 
-// Helper to set the active section.
-var setActive = function(index, ease) {
-  _(sections).each(function(s) { s.className = s.className.replace(' active', '') });
-  sections[index].className += ' active';
-  return true;
-};
+var map = mapbox
+  // Creates the map with tile and spots layers.
+  .map('map', [tiles, spots])
+  // Sets the initial map view to 0.1296E, 51.5011N @ Z14.
+  .centerzoom({ lon:-0.1296, lat:51.5011 }, 14);
 
-// Bind to scroll events to find the active section.
-window.onscroll = _(function() {
-  // If scrolled to the very top of the page set the first section active.
-  if (window.scrollY === 0) return setActive(0, true);
-
-  // Otherwise, conditionally determine the extent to which page must be
-  // scrolled for each section. The first section that matches the current
-  // scroll position wins and exits the loop early.
-  var memo = 0;
-  var buffer = (window.innerHeight*0.3333);
-  _(sections).any(function(el, index) {
-    memo += el.offsetHeight;
-    return window.scrollY < (memo-buffer) ? setActive(index, true) : false;
-  });
-}).debounce(20);
+// Enable interaction events on spots layer.
+mapbox.markers.interaction(spots);
 </script>
 
 </body>
