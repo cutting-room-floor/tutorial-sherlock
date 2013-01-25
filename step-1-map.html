@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='UTF-8'/>
+<script src='http://api.tiles.mapbox.com/mapbox.js/v0.6.7/mapbox.js'></script>
+<link href='http://api.tiles.mapbox.com/mapbox.js/v0.6.7/mapbox.css' rel='stylesheet' />
+<style>
+body {
+  margin:0px;
+  padding:0px;
+  font:normal 15px/20px Arial,sans-serif;
+  background:#fff;
+  }
+#map  {
+  position:absolute;
+  top:0px;
+  bottom:0px;
+  left:0px;
+  width:100%;
+  }
+</style>
+</head>
+<body>
+
+<div id='map'></div>
+
+<script>
+var geojson = [
+  { "geometry": { "type": "Point", "coordinates": [-0.155740,51.517998] },
+    "properties": { "title": "Baker St." } },
+  { "geometry": { "type": "Point", "coordinates": [-0.075531,51.514084] },
+    "properties": { "title": "Aldgate Station" } },
+  { "geometry": { "type": "Point", "coordinates": [-0.087097,51.505337] },
+    "properties": { "title": "London Bridge Station" } },
+  { "geometry": { "type": "Point", "coordinates": [0.055275,51.487156] },
+    "properties": { "title": "Woolwich Arsenal" } },
+  { "geometry": { "type": "Point", "coordinates": [-0.128853,51.501076] },
+    "properties": { "title": "Gloucester Station" } },
+  { "geometry": { "type": "Point", "coordinates": [-0.195951,51.502171] },
+    "properties": { "title": "Caulfield Gardens" } },
+  { "geometry": { "type": "Point", "coordinates": [-0.106832,51.514328] },
+    "properties": { "title": "The Daily Telegraph" } },
+  { "geometry": { "type": "Point", "coordinates": [-0.123124,51.507168] },
+    "properties": { "title": "Charing Cross Station" } },
+];
+var tiles = mapbox.layer().tilejson({
+  tiles: [ "http://a.tiles.mapbox.com/v3/yhahn.map-liczq28b/{z}/{x}/{y}.png" ]
+});
+var spots = mapbox.markers.layer()
+  // Load up markers from geojson data.
+  .features(geojson);
+
+var map = mapbox
+  // Creates the map with tile and spots layers.
+  .map('map', [tiles, spots])
+  // Sets the initial map view to 0.1296E, 51.5011N @ Z14.
+  .centerzoom({ lon:-0.1296, lat:51.5011 }, 14);
+
+// Enable interaction events on spots layer.
+mapbox.markers.interaction(spots);
+</script>
+
+</body>
+</html>
