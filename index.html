@@ -12,6 +12,7 @@ body {
   font:normal 15px/20px Arial,sans-serif;
   background:#fff;
   }
+
 article {
   width:33.3333%;
   min-width:320px;
@@ -69,6 +70,9 @@ small {
   bottom:0px;
   width:200%;
   left:-50%;
+  transition:opacity 250ms;
+  -moz-transition:opacity 250ms;
+  -webkit-transition:opacity 250ms;
   }
 .spot {
   width:60px;
@@ -101,9 +105,11 @@ small {
   background-color:#222;
   width:100px; height:100px; margin:-60px 0px 0px -60px;
   }
+/* Distinguish the "cover page" visually other sections. */
+body.section-0 #map { opacity:0.5; }
 </style>
 </head>
-<body>
+<body class='section-0'>
 
 <div id='pane'><div id='map'></div></div>
 
@@ -203,6 +209,9 @@ var setActive = function(index, ease) {
   _(markers).each(function(m) { m.element.className = m.element.className.replace(' active', '') });
   sections[index].className += ' active';
   markers[index].element.className += ' active';
+
+  // Set a body class for the active section.
+  document.body.className = 'section-' + index;
 
   // Ease map to active marker.
   if (!ease) {
