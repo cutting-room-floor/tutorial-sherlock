@@ -53,15 +53,10 @@ small {
 .cover:before {
   content:'';
   display:block;
-  width:100px; height:100px;
+  width:120px; height:120px;
   margin:0px auto 20px;
-  border-radius:50%;
-  border:10px solid transparent;
   }
-.cover.active:before {
-  background:#333 url(sprite.png) 0px 0px no-repeat;
-  border-color:#333;
-  }
+.cover.active:before { background:url(sprite.png) 0px -120px no-repeat; }
 
 #pane {
   position:fixed;
