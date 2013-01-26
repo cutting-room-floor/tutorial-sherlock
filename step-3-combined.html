@@ -2,6 +2,9 @@
 <html>
 <head>
 <meta charset='UTF-8'/>
+<!--[if lt IE 9]>
+<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
 <script src='http://underscorejs.org/underscore-min.js'></script>
 <script src='http://api.tiles.mapbox.com/mapbox.js/v0.6.7/mapbox.js'></script>
 <link href='http://api.tiles.mapbox.com/mapbox.js/v0.6.7/mapbox.css' rel='stylesheet' />
@@ -12,6 +15,7 @@ body {
   font:normal 15px/20px Arial,sans-serif;
   background:#fff;
   }
+
 article {
   width:33.3333%;
   min-width:320px;
@@ -22,14 +26,17 @@ article {
 section {
   padding:40px;
   margin-left:40px;
-  color:transparent;
+  color:#888;
+  color:rgba(128,128,128,0);
   text-shadow:rgba(64,64,64,1) 0px 0px 4px;
   position:relative;
+  transition:background 500ms, color 500ms;
+  -moz-transition:background 500ms, color 500ms;
   -webkit-transition:background 500ms, color 500ms;
   }
 section.active {
-  background:rgba(32,32,32,255);
-  color:rgba(255,255,255,0.9);
+  background:#222;
+  color:#eee;
   }
 h1 { font-size:2em; line-height:1em; }
 h2 { font-size:1.3333em; }
@@ -46,15 +53,10 @@ small {
 .cover:before {
   content:'';
   display:block;
-  width:100px; height:100px;
+  width:120px; height:120px;
   margin:0px auto 20px;
-  border-radius:50%;
-  border:10px solid transparent;
   }
-.cover.active:before {
-  background:#333 url(sprite.png) 0px 0px no-repeat;
-  border-color:#333;
-  }
+.cover.active:before { background:url(sprite.png) 0px -120px no-repeat; }
 
 #pane {
   position:fixed;
@@ -69,41 +71,39 @@ small {
   bottom:0px;
   width:200%;
   left:-50%;
+  transition:opacity 250ms;
+  -moz-transition:opacity 250ms;
+  -webkit-transition:opacity 250ms;
   }
 .spot {
-  width:60px;
-  height:60px;
-  margin:-40px 0px 0px -40px;
-  border-radius:50%;
-  border:10px solid #ff9270;
-  background:#ff9270 url(sprite.png) 100px 100px no-repeat;
+  width:120px;
+  height:120px;
+  margin:-60px 0px 0px -60px;
+  background:url(sprite.png) 120px 120px no-repeat;
   position:absolute;
   }
 .spot-cover { display:none; }
-.spot-baker { background-position:-120px -20px; }
-.spot-baker.active { background-position:-100px 0px; }
-.spot-aldgate { background-position:-220px -20px; }
-.spot-aldgate.active { background-position:-200px 0px; }
-.spot-london-bridge { background-position:-320px -20px; }
-.spot-london-bridge.active { background-position:-300px 0px; }
-.spot-woolwich { background-position:-420px -20px; }
-.spot-woolwich.active { background-position:-400px 0px; }
-.spot-gloucester { background-position:-520px -20px; }
-.spot-gloucester.active { background-position:-500px 0px; }
-.spot-caulfield-gardens { background-position:-620px -20px; }
-.spot-caulfield-gardens.active { background-position:-600px 0px; }
-.spot-telegraph { background-position:-720px -20px; }
-.spot-telegraph.active { background-position:-700px 0px; }
-.spot-charing-cross { background-position:-820px -20px; }
-.spot-charing-cross.active { background-position:-800px 0px; }
-.spot.active {
-  border-color:#222;
-  background-color:#222;
-  width:100px; height:100px; margin:-60px 0px 0px -60px;
-  }
+.spot-baker { background-position:-130px 0px; }
+.spot-baker.active { background-position:-130px -120px; }
+.spot-aldgate { background-position:-260px 0px; }
+.spot-aldgate.active { background-position:-260px -120px; }
+.spot-london-bridge { background-position:-390px 0px; }
+.spot-london-bridge.active { background-position:-390px -120px; }
+.spot-woolwich { background-position:-520px 0px; }
+.spot-woolwich.active { background-position:-520px -120px; }
+.spot-gloucester { background-position:-650px 0px; }
+.spot-gloucester.active { background-position:-650px -120px; }
+.spot-caulfield-gardens { background-position:-780px 0px; }
+.spot-caulfield-gardens.active { background-position:-780px -120px; }
+.spot-telegraph { background-position:-910px 0px; }
+.spot-telegraph.active { background-position:-910px -120px; }
+.spot-charing-cross { background-position:-1040px 0px; }
+.spot-charing-cross.active { background-position:-1040px -120px; }
+/* Distinguish the "cover page" visually other sections. */
+body.section-0 #map { opacity:0.5; }
 </style>
 </head>
-<body>
+<body class='section-0'>
 
 <div id='pane'><div id='map'></div></div>
 
@@ -150,7 +150,7 @@ small {
 <script>
 var geojson = [
   { "geometry": { "type": "Point", "coordinates": [-0.129600,51.501100] },
-    "properties": { "id": "cover" } },
+    "properties": { "id": "cover", "zoom": 13 } },
   { "geometry": { "type": "Point", "coordinates": [-0.155740,51.517998] },
     "properties": { "id": "baker" } },
   { "geometry": { "type": "Point", "coordinates": [-0.075531,51.514084] },
@@ -204,6 +204,9 @@ var setActive = function(index, ease) {
   sections[index].className += ' active';
   markers[index].element.className += ' active';
 
+  // Set a body class for the active section.
+  document.body.className = 'section-' + index;
+
   // Ease map to active marker.
   if (!ease) {
     map.centerzoom(markers[index].location, markers[index].data.properties.zoom||14);
@@ -216,17 +219,26 @@ var setActive = function(index, ease) {
 
 // Bind to scroll events to find the active section.
 window.onscroll = _(function() {
+  // IE 8
+  if (window.pageYOffset === undefined) {
+    var y = document.documentElement.scrollTop;
+    var h = document.documentElement.clientHeight;
+  } else {
+    var y = window.pageYOffset;
+    var h = window.innerHeight;
+  }
+
   // If scrolled to the very top of the page set the first section active.
-  if (window.scrollY === 0) return setActive(0, true);
+  if (y === 0) return setActive(0, true);
 
   // Otherwise, conditionally determine the extent to which page must be
   // scrolled for each section. The first section that matches the current
   // scroll position wins and exits the loop early.
   var memo = 0;
-  var buffer = (window.innerHeight*0.3333);
+  var buffer = (h * 0.3333);
   _(sections).any(function(el, index) {
     memo += el.offsetHeight;
-    return window.scrollY < (memo-buffer) ? setActive(index, true) : false;
+    return y < (memo-buffer) ? setActive(index, true) : false;
   });
 }).debounce(20);
 
