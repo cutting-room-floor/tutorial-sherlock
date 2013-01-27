@@ -128,11 +128,15 @@ window.onscroll = _(function() {
   // scroll position wins and exits the loop early.
   var memo = 0;
   var buffer = (h * 0.3333);
-  _(sections).any(function(el, index) {
+  var active = _(sections).any(function(el, index) {
     memo += el.offsetHeight;
     return y < (memo-buffer) ? setActive(index, true) : false;
   });
-}).debounce(20);
+
+  // If no section was set active the user has scrolled past the last section.
+  // Set the last section active.
+  if (!active) setActive(sections.length - 1, true);
+}).debounce(10);
 </script>
 
 </body>
