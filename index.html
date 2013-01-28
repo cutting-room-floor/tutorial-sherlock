@@ -26,28 +26,40 @@ article {
 section {
   padding:40px;
   margin-left:40px;
-  color:#888;
-  color:rgba(128,128,128,0);
-  text-shadow:rgba(64,64,64,1) 0px 0px 4px;
   position:relative;
   transition:background 500ms, color 500ms;
   -moz-transition:background 500ms, color 500ms;
   -webkit-transition:background 500ms, color 500ms;
   }
+section,
+section a {
+  color:#888;
+  color:rgba(128,128,128,0);
+  text-decoration:none;
+  text-shadow:rgba(64,64,64,1) 0px 0px 4px;
+  }
 section.active {
   background:#222;
   color:#eee;
   }
+section.active a { color:#eee; }
+section.active small { color:#aaa; }
 h1 { font-size:2em; line-height:1em; }
 h2 { font-size:1.3333em; }
 h1,h2 { margin:0px 0px 10px; }
 p { margin:0px; }
-small {
+
+.scroll {
   position:absolute;
   right:0px; bottom:0px;
   font-size:10px;
   text-transform:uppercase;
   padding:5px 10px;
+  }
+
+.colophon {
+  display:block;
+  margin-top:10px;
   }
 
 .cover:before {
@@ -101,16 +113,6 @@ small {
 .spot-charing-cross { background-position:-1040px 0px; }
 .spot-charing-cross.active { background-position:-1040px -120px; }
 
-.map-attribution {
-  left:auto;
-  right:25%;
-  font-size:9px;
-  }
-.map-attribution a {
-  color:#333;
-  text-decoration:none;
-  }
-
 /* Distinguish the "cover page" visually other sections. */
 body.section-0 #map { opacity:0.5; }
 
@@ -141,7 +143,6 @@ body.section-0 #map { opacity:0.5; }
     width:100%;
     height:150%;
     }
-  .map-attribution { right:0px; bottom:33.3333%; }
   }
 
 @media (min-width:1280px) {
@@ -160,7 +161,7 @@ body.section-0 #map { opacity:0.5; }
   <section id='cover' class='cover active'>
     <h1>The Adventure of the Bruce-Partington Plans</h1>
     <p>by Sir Arthur Conan Doyle</p>
-    <small>Scroll ▼</small>
+    <small class='scroll'>Scroll ▼</small>
   </section>
   <section id='baker'>
     <h2>221b Baker St.</h2>
@@ -193,6 +194,11 @@ body.section-0 #map { opacity:0.5; }
   <section id='charing-cross'>
     <h2>Charing Cross Hotel</h2>
     <p>Walter writes to Oberstein and convinces him to meet in the smoking room of the Charing Cross Hotel where he promises additional plans for the submarine in exchange for money. The plan works and Holmes and Watson catch both criminals.</p>
+    <small class='colophon'>
+      Adapted from <a href='http://www.gutenberg.org/files/2346/2346-h/2346-h.htm'>Project Gutenberg</a><br/>
+      Map data &copy; <a href='http://openstreetmap.org/copyright'>OpenStreetMap Contributors</a><br/>
+      Map design &copy; <a href='http://mapbox.com/about/maps/'>MapBox</a>
+    </small>
   </section>
 </article>
 
@@ -218,8 +224,7 @@ var geojson = [
     "properties": { "id": "charing-cross" } }
 ];
 var tiles = mapbox.layer().tilejson({
-  tiles: [ "http://a.tiles.mapbox.com/v3/examples.map-liczq28b/{z}/{x}/{y}.png" ],
-  attribution: '<a href="http://mapbox.com/about/maps">Terms &amp; Feedback</a>'
+  tiles: [ "http://a.tiles.mapbox.com/v3/examples.map-liczq28b/{z}/{x}/{y}.png" ]
 });
 var spots = mapbox.markers.layer()
   // Load up markers from geojson data.
@@ -235,9 +240,6 @@ var spots = mapbox.markers.layer()
 // Creates the map with tile and marker layers and
 // no input handlers (mouse drag, scrollwheel, etc).
 var map = mapbox.map('map', [tiles, spots], null, []);
-
-// Show attribution for tiles layer.
-map.ui.attribution.add().content(tiles.tilejson().attribution);
 
 // Array of story section elements.
 var sections = document.getElementsByTagName('section');
