@@ -18,6 +18,15 @@ body {
   left:0px;
   width:100%;
   }
+.map-attribution {
+  left:auto;
+  right:0px;
+  font-size:9px;
+  }
+.map-attribution a {
+  color:#333;
+  text-decoration:none;
+  }
 </style>
 </head>
 <body>
@@ -44,7 +53,8 @@ var geojson = [
     "properties": { "title": "Charing Cross Station" } },
 ];
 var tiles = mapbox.layer().tilejson({
-  tiles: [ "http://a.tiles.mapbox.com/v3/examples.map-6m5zwq0h/{z}/{x}/{y}.png" ]
+  tiles: [ "http://a.tiles.mapbox.com/v3/examples.map-6m5zwq0h/{z}/{x}/{y}.png" ],
+  attribution: '<a href="http://mapbox.com/about/maps">Terms &amp; Feedback</a>'
 });
 var spots = mapbox.markers.layer()
   // Load up markers from geojson data.
@@ -58,6 +68,9 @@ var map = mapbox
 
 // Enable interaction events on spots layer.
 mapbox.markers.interaction(spots);
+
+// Show attribution for tiles layer.
+map.ui.attribution.add().content(tiles.tilejson().attribution);
 </script>
 
 </body>
