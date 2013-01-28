@@ -18,6 +18,7 @@ body {
   left:0px;
   width:100%;
   }
+
 .spot {
   width:120px;
   height:120px;
@@ -33,6 +34,16 @@ body {
 .spot-caulfield-gardens { background-position:-780px 0px; }
 .spot-telegraph { background-position:-910px 0px; }
 .spot-charing-cross { background-position:-1040px 0px; }
+
+.map-attribution {
+  left:auto;
+  right:0px;
+  font-size:9px;
+  }
+.map-attribution a {
+  color:#333;
+  text-decoration:none;
+  }
 </style>
 </head>
 <body>
@@ -59,7 +70,8 @@ var geojson = [
     "properties": { "id": "charing-cross" } }
 ];
 var tiles = mapbox.layer().tilejson({
-  tiles: [ "http://a.tiles.mapbox.com/v3/examples.map-liczq28b/{z}/{x}/{y}.png" ]
+  tiles: [ "http://a.tiles.mapbox.com/v3/examples.map-liczq28b/{z}/{x}/{y}.png" ],
+  attribution: '<a href="http://mapbox.com/about/maps">Terms &amp; Feedback</a>'
 });
 var spots = mapbox.markers.layer()
   // Load up markers from geojson data.
@@ -77,6 +89,9 @@ var map = mapbox
   .map('map', [tiles, spots])
   // Sets the initial map view to 0.1296E, 51.5011N @ Z14.
   .centerzoom({ lon:-0.1296, lat:51.5011 }, 14);
+
+// Show attribution for tiles layer.
+map.ui.attribution.add().content(tiles.tilejson().attribution);
 </script>
 
 </body>
