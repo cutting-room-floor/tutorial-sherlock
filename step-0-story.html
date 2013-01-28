@@ -13,6 +13,7 @@ body {
   font:normal 15px/20px Arial,sans-serif;
   background:#fff;
   }
+
 article {
   width:33.3333%;
   min-width:320px;
@@ -23,28 +24,39 @@ article {
 section {
   padding:40px;
   margin-left:40px;
-  color:#888;
-  color:rgba(128,128,128,0);
-  text-shadow:rgba(64,64,64,1) 0px 0px 4px;
   position:relative;
   transition:background 500ms, color 500ms;
   -moz-transition:background 500ms, color 500ms;
   -webkit-transition:background 500ms, color 500ms;
   }
+section,
+section a {
+  color:#888;
+  color:rgba(128,128,128,0);
+  text-decoration:none;
+  text-shadow:rgba(64,64,64,1) 0px 0px 4px;
+  }
 section.active {
   background:#222;
   color:#eee;
   }
+section.active a { color:#eee; }
+section.active small { color:#aaa; }
 h1 { font-size:2em; line-height:1em; }
 h2 { font-size:1.3333em; }
 h1,h2 { margin:0px 0px 10px; }
 p { margin:0px; }
-small {
+
+.scroll {
   position:absolute;
   right:0px; bottom:0px;
   font-size:10px;
   text-transform:uppercase;
   padding:5px 10px;
+  }
+.colophon {
+  display:block;
+  margin-top:10px;
   }
 
 .cover:before {
@@ -62,7 +74,7 @@ small {
   <section class='cover active'>
     <h1>The Adventure of the Bruce-Partington Plans</h1>
     <p>by Sir Arthur Conan Doyle</p>
-    <small>Scroll ▼</small>
+    <small class='scroll'>Scroll ▼</small>
   </section>
   <section>
     <h2>221b Baker St.</h2>
@@ -95,6 +107,9 @@ small {
   <section>
     <h2>Charing Cross Hotel</h2>
     <p>Walter writes to Oberstein and convinces him to meet in the smoking room of the Charing Cross Hotel where he promises additional plans for the submarine in exchange for money. The plan works and Holmes and Watson catch both criminals.</p>
+    <small class='colophon'>
+      Adapted from <a href='http://www.gutenberg.org/files/2346/2346-h/2346-h.htm'>Project Gutenberg</a>
+    </small>
   </section>
 </article>
 
