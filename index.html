@@ -225,6 +225,10 @@ var geojson = [
 var tiles = mapbox.layer().tilejson({
   tiles: [ "https://a.tiles.mapbox.com/v3/examples.map-liczq28b/{z}/{x}/{y}.png" ]
 });
+
+// Use https for markers
+mapbox.markers.marker_baseurl = 'https://a.tiles.mapbox.com/v3/marker/';
+
 var spots = mapbox.markers.layer()
   // Load up markers from geojson data.
   .features(geojson)
